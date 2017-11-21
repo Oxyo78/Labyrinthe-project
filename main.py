@@ -28,9 +28,11 @@ coor_wall, coor_ground = map.map_generator()
 for x,y in coor_ground:
 	windows_screen.blit(ground, (x, y))
 	print(x, y)
-"""for x,y in coor_wall:
-	windows_screen.blit(wall, (x, y))"""
-print(coor_ground)
+for x,y in coor_wall:
+	windows_screen.blit(wall, (x, y))
+
+#Affiche les coordonnée des mur
+#print(coor_ground)
 
 pygame.display.flip()
 
