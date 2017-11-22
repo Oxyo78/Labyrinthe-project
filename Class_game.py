@@ -14,10 +14,8 @@ class LevelGenerator:
 			file_list = [] 
 			for line in file:
 				line_list = []
-				for letter in line:
-					if letter != "\n":
-						line_list.append(letter)
-				file_list.append(line_list)
+				line.rstrip("\n")
+				file_list.append(line)
 			self.level_design = file_list
 
 	
@@ -53,7 +51,13 @@ class LevelGenerator:
 			coor_x = 10
 
 
-"""m = LevelGenerator()
-m.map_generator()
-m.affichage(windows_screen)"""
-#print(m.level_design)
+class Character:
+	'''Initialize of toons'''
+
+	def __init__(self, texture):
+		self.texture = texture
+
+	def characterAttribute(self, texture):
+		texture = pygame.image.load(texture).convert()
+
+
