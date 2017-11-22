@@ -1,81 +1,59 @@
 import pygame, os
 from pygame.locals import *
 
+
 class LevelGenerator:
 	"""Loading and generator of the map from LevelGame.txt """
-	LEVEL_DESIGN = [] #List of the letter in file
-	GROUND_LIST = [] # List of coordinate X and Y of each ground texture
-	WALL_LIST = [] # List of coordinate X and Y of each wall texture, It's use for collision.mouvement.player
-
 
 	def __init__(self):
-		with open("LevelGame.txt", "r") as fichier:
-			for ligne in fichier:
-				for letter in ligne:
-					self.LEVEL_DESIGN.append(letter)
+		self.level_design = 0
+
+
+	def map_generator(self):
+		with open("LevelGame.txt", "r") as file:
+			file_list = [] 
+			for line in file:
+				line_list = []
+				for letter in line:
+					if letter != "\n":
+						line_list.append(letter)
+				file_list.append(line_list)
+			self.level_design = file_list
 
 	
-	def map_generator(self):
-		COOR_X = 0 # Cordinate X of the top left game zone
-		COOR_Y = 0 # Cordinate Y of the top left game zone
+	def affichage(self, windows_screen):
+		coor_x = 10 # Cordinate X of the sprite
+		coor_y = 10 # Cordinate Y of the sprite
+		sprite_size = 30
 
-		count_line = 0# Count the number of sprite by line (15)
-		for letter in self.LEVEL_DESIGN:
-			if letter == "M":
-				self.WALL_LIST.append((COOR_X, COOR_Y))
-			elif letter == "S":
-				self.GROUND_LIST.append((COOR_X, COOR_Y))
-			COOR_X += 30
-			if count_line == 15: # If he is at the end of line (15 sprite)		
-				COOR_X = 0 # Back to begin
-				COOR_Y += 30 # Moving to next line
-				count_line = 0 # And restart
-			count_line += 1
+		# Get texture and scale 30*30
+		ground_texture = pygame.image.load("Picture/floor-tiles-20x20.png").convert()
+		wall_texture = pygame.image.load("Picture/floor-tiles-20x20.png").convert()
+		finish_texture = pygame.image.load("Picture/depart.png").convert()
+		ground_texture.set_clip(pygame.Rect(160, 220, 20, 20))
+		wall_texture.set_clip(pygame.Rect(40, 60, 20, 20))
+		ground = ground_texture.subsurface(ground_texture.get_clip())
+		wall = wall_texture.subsurface(wall_texture.get_clip())
+		finish = finish_texture.subsurface(finish_texture.get_clip())
+		finish.set_colorkey((0,0,0)) # Convertion in alpha of "depart" texture
+		ground = pygame.transform.scale(ground,(30,30)) # Convertion of the sprit 20*20 in 30*30 pixels
+		wall = pygame.transform.scale(wall,(30,30)) # Convertion of the sprit 20*20 in 30*30 pixels
 
-		return self.WALL_LIST, self.GROUND_LIST
-
-
-
-m = LevelGenerator()
-w, g = m.map_generator()
-print(g)
-
-		
-
-
-
-	#def rafraichissement_ecran(self,affichage):
-		
-class ObjectMap:
-#	def __init__(self, x, y):
-#		self.x = x
-#		self.y = y
-	pass
-
-class Player(ObjectMap):
-#	def __init__(self, x, y):
-#		super(x, y)
-
-	def move():
-		pass
-
-class Gardien:
-	pass
+		for line in self.level_design:
+			for letter in line:
+				if letter == "M":
+					windows_screen.blit(wall, (coor_x, coor_y))
+				if letter == "G":
+					windows_screen.blit(ground, (coor_x, coor_y))
+				if letter == "A":
+					windows_screen.blit(ground, (coor_x, coor_y))
+					windows_screen.blit(finish, (coor_x, coor_y))
+				coor_x += 30
+			coor_y += 30
+			coor_x = 10
 
 
-#mcgyver = Player(3, 4)
-#tube = ObjectMap(4, 5)
-#guardien = ObjectMap(6, 7)
-
-#mcgyver.x == 3
-#mcgyver.y == 4
-
-#mcgyver.move(4,5)
-#tube.move(!!!!)
-
-#if mcgyver == guardien:
-#	victoire()
-
-#if mcgyver == tube:
-#	mcgyver>ramasser(tube)
-
+"""m = LevelGenerator()
+m.map_generator()
+m.affichage(windows_screen)"""
+#print(m.level_design)
