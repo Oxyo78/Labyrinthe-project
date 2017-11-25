@@ -16,13 +16,36 @@ map = LevelGenerator()
 map.map_generator()
 map.affichage(windows_screen)
 
+player = Character("Picture/MacGyver.png", 280, 400)
+player.characterPosition(windows_screen)
+
+gardien = Character("Picture/Gardien.png", 400, 190)
+gardien.characterPosition(windows_screen)
+
+
 pygame.display.flip()
 
 
 while game_running:
 	for event in pygame.event.get():
-			#pygame prend le premier évènement de la file
+			# Close game event
 			if event.type==QUIT:
-			#l'évènement QUIT correspond au clic sur la croix
 				game_running = 0
+			
+			# Key control event	
+			elif event.type == KEYDOWN:
+				if event.key == K_UP:
+					player.mouvement("up", windows_screen, map.level_design)
+
+				if event.key == K_DOWN:
+					player.mouvement("down", windows_screen, map)
+
+				if event.key == K_LEFT:
+					player.mouvement("left", windows_screen, map)
+
+				if event.key == K_RIGHT:
+					player.mouvement("right", windows_screen, map)
+
+	map.affichage(windows_screen)
+	gardien.characterPosition(windows_screen)
 

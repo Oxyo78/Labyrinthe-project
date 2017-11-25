@@ -6,7 +6,8 @@ class LevelGenerator:
 	"""Loading and generator of the map from LevelGame.txt """
 
 	def __init__(self):
-		self.level_design = 0
+		self.level_design = 0 # List from LevelGame.txt
+		self.wall_pos = 0 # List from walls positions
 
 
 	def map_generator(self):
@@ -23,6 +24,8 @@ class LevelGenerator:
 		coor_x = 10 # Cordinate X of the sprite
 		coor_y = 10 # Cordinate Y of the sprite
 		sprite_size = 30
+		wall_list = []
+
 
 		# Get texture and scale 30*30
 		ground_texture = pygame.image.load("Picture/floor-tiles-20x20.png").convert()
@@ -43,21 +46,81 @@ class LevelGenerator:
 					windows_screen.blit(wall, (coor_x, coor_y))
 				if letter == "G":
 					windows_screen.blit(ground, (coor_x, coor_y))
+					wall_list.append(coor_x, coor_y)
 				if letter == "A":
 					windows_screen.blit(ground, (coor_x, coor_y))
 					windows_screen.blit(finish, (coor_x, coor_y))
 				coor_x += 30
 			coor_y += 30
 			coor_x = 10
+		self.wall_pos = wall_list
+
 
 
 class Character:
 	'''Initialize of toons'''
 
-	def __init__(self, texture):
+	def __init__(self, texture, pos_x, pos_y):
 		self.texture = texture
+		self.pos_x = pos_x
+		self.pos_y = pos_y
+		self.toon = 0
 
-	def characterAttribute(self, texture):
-		texture = pygame.image.load(texture).convert()
+	def characterPosition(self,windows_screen):
+		# Get texture and convert
+		texture = pygame.image.load(self.texture).convert()
+		texture_character = texture.subsurface(texture.get_clip())
+		texture_character = pygame.transform.scale(texture_character,(30,30))
+		texture_character.set_colorkey((0, 0, 0))
+		
+		# Show character on windows
+		windows_screen.blit(texture_character,(self.pos_x, self.pos_y))
+		self.toon = texture_character
+
+	def mouvement(self, direction, windows_screen, map):
+		# player control
+		if direction == "up":
+			if self.pos_y - 30 < 10: # Border colision test
+				self.pos_y = self.pos_y
+				print(map.wall_pos)
+			
+				#self.pos_y = self.pos_y
+			else:
+				self.pos_y = self.pos_y - 30
+				print("position {} et {}".format(self.pos_x, self.pos_y))
+
+		if direction == "down":
+			if self.pos_y + 30 > 430 :
+				self.pos_y = self.pos_y
+			else:
+				self.pos_y = self.pos_y + 30
+
+		if direction == "right":
+			if self.pos_x + 30 > 430:
+				self.pos_x = self.pos_x
+			else:
+				self.pos_x = self.pos_x + 30
+
+		if direction == "left":
+			if self.pos_x - 30 < 10:
+				self.pos_x = self.pos_x
+			else:
+				self.pos_x = self.pos_x - 30
+
+		windows_screen.blit(self.toon, (self.pos_x, self.pos_y))
+		pygame.display.flip()
+
+class Objet:
+	"""Get object znd show in random position"""
 
 
+
+
+
+
+def main():
+	wall = LevelGenerator.wall_pos
+	print(wall)
+
+if __name__ == "__main__":
+	main()

@@ -21,6 +21,7 @@ class LevelGenerator:
 			for line in file:
 				line_list = []
 				line.rstrip("\n")
+
 				file_list.append(line)
 			self.level_design = file_list
 
@@ -66,6 +67,8 @@ map.map_generator()
 map.affichage(windows_screen)
 
 pygame.display.flip()
+
+
 
 
 while game_running:
