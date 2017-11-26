@@ -21,7 +21,8 @@ player.characterPosition(windows_screen)
 
 gardien = Character("Picture/Gardien.png", 400, 190)
 gardien.characterPosition(windows_screen)
-
+map.wall_pos.append((gardien.pos_x, gardien.pos_y))
+print(map.wall_pos)
 
 pygame.display.flip()
 
@@ -35,17 +36,18 @@ while game_running:
 			# Key control event	
 			elif event.type == KEYDOWN:
 				if event.key == K_UP:
-					player.mouvement("up", windows_screen, map.level_design)
+					player.mouvement("up", windows_screen, map.wall_pos)
 
 				if event.key == K_DOWN:
-					player.mouvement("down", windows_screen, map)
+					player.mouvement("down", windows_screen, map.wall_pos)
 
 				if event.key == K_LEFT:
-					player.mouvement("left", windows_screen, map)
+					player.mouvement("left", windows_screen, map.wall_pos)
 
 				if event.key == K_RIGHT:
-					player.mouvement("right", windows_screen, map)
+					player.mouvement("right", windows_screen, map.wall_pos)
 
 	map.affichage(windows_screen)
 	gardien.characterPosition(windows_screen)
+
 

@@ -7,7 +7,7 @@ class LevelGenerator:
 
 	def __init__(self):
 		self.level_design = 0 # List from LevelGame.txt
-		self.wall_pos = 0 # List from walls positions
+		self.wall_pos = [] # List from walls positions
 
 
 	def map_generator(self):
@@ -24,7 +24,7 @@ class LevelGenerator:
 		coor_x = 10 # Cordinate X of the sprite
 		coor_y = 10 # Cordinate Y of the sprite
 		sprite_size = 30
-		wall_list = []
+		wall_list = [] # Wall colision list
 
 
 		# Get texture and scale 30*30
@@ -44,9 +44,11 @@ class LevelGenerator:
 			for letter in line:
 				if letter == "M":
 					windows_screen.blit(wall, (coor_x, coor_y))
+					wall_list.append((coor_x, coor_y)) #Add X and Y position to the wall colision list
+
 				if letter == "G":
 					windows_screen.blit(ground, (coor_x, coor_y))
-					wall_list.append(coor_x, coor_y)
+
 				if letter == "A":
 					windows_screen.blit(ground, (coor_x, coor_y))
 					windows_screen.blit(finish, (coor_x, coor_y))
@@ -77,50 +79,69 @@ class Character:
 		windows_screen.blit(texture_character,(self.pos_x, self.pos_y))
 		self.toon = texture_character
 
-	def mouvement(self, direction, windows_screen, map):
+	def mouvement(self, direction, windows_screen, wallPosition):
 		# player control
 		if direction == "up":
-			if self.pos_y - 30 < 10: # Border colision test
+
+			if self.pos_y - 30 < 10: # Windows border colision test
 				self.pos_y = self.pos_y
-				print(map.wall_pos)
-			
-				#self.pos_y = self.pos_y
-			else:
+			else: # Move to 
 				self.pos_y = self.pos_y - 30
-				print("position {} et {}".format(self.pos_x, self.pos_y))
+			for x, y in wallPosition: # Wall colision test
+				print(x, y)
+				"""if (x, y) == (self.pos_x, self.pos_y):
+					self.pos_y = self.pos_y + 30
+					print(x, y)
+					break"""
 
 		if direction == "down":
 			if self.pos_y + 30 > 430 :
 				self.pos_y = self.pos_y
 			else:
 				self.pos_y = self.pos_y + 30
+			for x, y in wallPosition:
+				if (x, y) == (self.pos_x, self.pos_y):
+					self.pos_y = self.pos_y - 30
+					break
 
 		if direction == "right":
 			if self.pos_x + 30 > 430:
 				self.pos_x = self.pos_x
 			else:
 				self.pos_x = self.pos_x + 30
+			for x, y in wallPosition:
+				if (x, y) == (self.pos_x, self.pos_y):
+					self.pos_x = self.pos_x - 30
+					break
 
 		if direction == "left":
 			if self.pos_x - 30 < 10:
 				self.pos_x = self.pos_x
 			else:
 				self.pos_x = self.pos_x - 30
+			for x, y in wallPosition:
+				if (x, y) == (self.pos_x, self.pos_y):
+					self.pos_x = self.pos_x + 30
+					break
 
 		windows_screen.blit(self.toon, (self.pos_x, self.pos_y))
 		pygame.display.flip()
 
 class Objet:
-	"""Get object znd show in random position"""
+	"""Get object and show in random position"""
 
 
 
 
 
 
-def main():
-	wall = LevelGenerator.wall_pos
+"""def main():
+	windows_screen= 0
+	map = LevelGenerator()
+	map.map_generator()
+
+	wall = map.wall_pos
 	print(wall)
 
 if __name__ == "__main__":
-	main()
+	main()"""
