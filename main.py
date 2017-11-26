@@ -21,7 +21,7 @@ player.characterPosition(windows_screen)
 
 gardien = Character("Picture/Gardien.png", 400, 190)
 gardien.characterPosition(windows_screen)
-map.wall_pos.append((gardien.pos_x, gardien.pos_y))
+map.wall_pos.append((gardien.pos_x, gardien.pos_y)) # Bug ? ne s'ajoute pas a la liste de l'event KEYDOWN
 print(map.wall_pos)
 
 pygame.display.flip()

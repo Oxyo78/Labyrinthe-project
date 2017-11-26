@@ -89,10 +89,10 @@ class Character:
 				self.pos_y = self.pos_y - 30
 			for x, y in wallPosition: # Wall colision test
 				print(x, y)
-				"""if (x, y) == (self.pos_x, self.pos_y):
+				if (x, y) == (self.pos_x, self.pos_y):
 					self.pos_y = self.pos_y + 30
 					print(x, y)
-					break"""
+					break
 
 		if direction == "down":
 			if self.pos_y + 30 > 430 :
