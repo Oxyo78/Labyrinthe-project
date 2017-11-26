@@ -1,5 +1,6 @@
 import pygame, os
 from pygame.locals import *
+import random
 
 
 class LevelGenerator:
@@ -8,6 +9,7 @@ class LevelGenerator:
 	def __init__(self):
 		self.level_design = 0 # List from LevelGame.txt
 		self.wall_pos = [] # List from walls positions
+		self.ground_pos = [] # List from ground positions
 
 
 	def map_generator(self):
@@ -25,6 +27,7 @@ class LevelGenerator:
 		coor_y = 10 # Cordinate Y of the sprite
 		sprite_size = 30
 		wall_list = [] # Wall colision list
+		ground_list = [] # Ground list
 
 
 		# Get texture and scale 30*30
@@ -44,10 +47,11 @@ class LevelGenerator:
 			for letter in line:
 				if letter == "M":
 					windows_screen.blit(wall, (coor_x, coor_y))
-					wall_list.append((coor_x, coor_y)) #Add X and Y position to the wall colision list
+					wall_list.append((coor_x, coor_y)) # Add X and Y position to the wall colision list
 
 				if letter == "G":
 					windows_screen.blit(ground, (coor_x, coor_y))
+					ground_list.append((coor_x, coor_y)) # Add X and Y positions to the ground position list
 
 				if letter == "A":
 					windows_screen.blit(ground, (coor_x, coor_y))
@@ -56,6 +60,7 @@ class LevelGenerator:
 			coor_y += 30
 			coor_x = 10
 		self.wall_pos = wall_list
+		self.ground_pos = ground_list
 
 
 
@@ -88,10 +93,8 @@ class Character:
 			else: # Move to 
 				self.pos_y = self.pos_y - 30
 			for x, y in wallPosition: # Wall colision test
-				print(x, y)
 				if (x, y) == (self.pos_x, self.pos_y):
 					self.pos_y = self.pos_y + 30
-					print(x, y)
 					break
 
 		if direction == "down":
@@ -127,21 +130,39 @@ class Character:
 		windows_screen.blit(self.toon, (self.pos_x, self.pos_y))
 		pygame.display.flip()
 
-class Objet:
+class ItemMap:
 	"""Get object and show in random position"""
+	def __init__(self, texture):
+		self.texture = texture
+		self.object_position = []
 
+	def random_position(self, groundPosition):
+		
+		object_position = []
+		object_position = random.sample(groundPosition, 3)
+		self.object_position = object_position
+		print("object_position : {}".format(object_position))
 
+	def affichageObject(self, windows_screen):
+		texture1 = pygame.image.load(self.texture).convert()
+		texture2 = pygame.image.load(self.texture).convert()
+		texture3 = pygame.image.load(self.texture).convert()
+		texture1.set_clip(pygame.Rect(0, 0, 32, 32))
+		texture2.set_clip(pygame.Rect(32, 0, 32, 32))
+		texture3.set_clip(pygame.Rect(64, 0, 32, 32))
+		Object1 = texture1.subsurface(texture1.get_clip())
+		Object2 = texture1.subsurface(texture2.get_clip())
+		Object3 = texture3.subsurface(texture3.get_clip())
+		Object1.set_colorkey((0, 0, 0))
+		Object2.set_colorkey((0, 0, 0))
+		Object3.set_colorkey((0, 0, 0))
+		Object1 = pygame.transform.scale(Object1,(30,30))
+		Object2 = pygame.transform.scale(Object2,(30,30))
+		Object3 = pygame.transform.scale(Object3,(30,30))
 
+		
+		windows_screen.blit(Object1,self.object_position[0])
+		windows_screen.blit(Object2,self.object_position[1])
+		windows_screen.blit(Object3,self.object_position[2])
 
-
-
-"""def main():
-	windows_screen= 0
-	map = LevelGenerator()
-	map.map_generator()
-
-	wall = map.wall_pos
-	print(wall)
-
-if __name__ == "__main__":
-	main()"""
+		pygame.display.flip()
