@@ -1,3 +1,5 @@
+#coding:utf-8
+
 import pygame, os
 from pygame.locals import *
 import random
@@ -132,37 +134,29 @@ class Character:
 
 class ItemMap:
 	"""Get object and show in random position"""
+	OBJECT_COUNT = 0
+
 	def __init__(self, texture):
 		self.texture = texture
 		self.object_position = []
+		ItemMap.OBJECT_COUNT += 1
+		print(ItemMap.OBJECT_COUNT)
 
 	def random_position(self, groundPosition):
 		
 		object_position = []
 		object_position = random.sample(groundPosition, 3)
 		self.object_position = object_position
-		print("object_position : {}".format(object_position))
+		for x in range(3):
+			print("object_position{} : {}".format(x, object_position[x]))
 
-	def affichageObject(self, windows_screen):
+	def affichageObject(self, rect_x, rect_y, object_position, windows_screen):
 		texture1 = pygame.image.load(self.texture).convert()
-		texture2 = pygame.image.load(self.texture).convert()
-		texture3 = pygame.image.load(self.texture).convert()
-		texture1.set_clip(pygame.Rect(0, 0, 32, 32))
-		texture2.set_clip(pygame.Rect(32, 0, 32, 32))
-		texture3.set_clip(pygame.Rect(64, 0, 32, 32))
+		texture1.set_clip(pygame.Rect(rect_x, rect_y, 32, 32))
 		Object1 = texture1.subsurface(texture1.get_clip())
-		Object2 = texture1.subsurface(texture2.get_clip())
-		Object3 = texture3.subsurface(texture3.get_clip())
 		Object1.set_colorkey((0, 0, 0))
-		Object2.set_colorkey((0, 0, 0))
-		Object3.set_colorkey((0, 0, 0))
-		Object1 = pygame.transform.scale(Object1,(30,30))
-		Object2 = pygame.transform.scale(Object2,(30,30))
-		Object3 = pygame.transform.scale(Object3,(30,30))
-
-		
-		windows_screen.blit(Object1,self.object_position[0])
-		windows_screen.blit(Object2,self.object_position[1])
-		windows_screen.blit(Object3,self.object_position[2])
-
+		Object1 = pygame.transform.scale(Object1,(30,30))	
+		windows_screen.blit(Object1,self.object_position[object_position])
 		pygame.display.flip()
+		
+		

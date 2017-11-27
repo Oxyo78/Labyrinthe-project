@@ -1,3 +1,5 @@
+#coding:utf-8
+
 from Class_game import *
 import pygame, os
 from pygame.locals import *
@@ -24,11 +26,24 @@ gardien.characterPosition(windows_screen)
 map.wall_pos.append((gardien.pos_x, gardien.pos_y)) # Bug ? ne s'ajoute pas a la liste de l'event KEYDOWN
 #print(map.wall_pos)
 
-Object_Game = ItemMap("Picture/extras-32x-32.png")
-Object_Game.random_position(map.ground_pos)
-Object_Game.affichageObject(windows_screen)
+#Object 1
+Object_Game1 = ItemMap("Picture/extras-32x-32.png")
+Object_Game1.random_position(map.ground_pos)
+Object_Game1.affichageObject(0, 0, 0, windows_screen)
+
+#Object 2
+Object_Game2 = ItemMap("Picture/extras-32x-32.png")
+Object_Game2.random_position(map.ground_pos)
+Object_Game2.affichageObject(32, 0, 1, windows_screen)
+
+#Object 3
+Object_Game3 = ItemMap("Picture/extras-32x-32.png")
+Object_Game3.random_position(map.ground_pos)
+Object_Game3.affichageObject(64, 0, 2, windows_screen)
 
 pygame.display.flip()
+
+
 
 
 while game_running:
@@ -49,7 +64,9 @@ while game_running:
 
 			if event.key == K_RIGHT:
 				player.mouvement("right", windows_screen, map.wall_pos)
-			Object_Game.affichageObject(windows_screen)
+			Object_Game1.affichageObject(0, 0, 0, windows_screen)
+			Object_Game2.affichageObject(32, 0, 1, windows_screen)
+			Object_Game3.affichageObject(64, 0, 2, windows_screen)
 	map.affichage(windows_screen)
 	gardien.characterPosition(windows_screen)
 	
