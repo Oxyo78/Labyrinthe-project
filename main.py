@@ -26,26 +26,25 @@ gardien.characterPosition(windows_screen)
 map.wall_pos.append((gardien.pos_x, gardien.pos_y)) # Bug ? ne s'ajoute pas a la liste de l'event KEYDOWN
 #print(map.wall_pos)
 
+#Initialize 3 random positions for objects
+ItemMap.ranListObject(map.ground_pos)
 #Object 1
 Object_Game1 = ItemMap("Picture/extras-32x-32.png")
-Object_Game1.random_position(map.ground_pos)
-Object_Game1.affichageObject(0, 0, 0, windows_screen)
+Object_Game1.affichageObject(0, 0, 0, 1, windows_screen)
 
 #Object 2
 Object_Game2 = ItemMap("Picture/extras-32x-32.png")
-Object_Game2.random_position(map.ground_pos)
-Object_Game2.affichageObject(32, 0, 1, windows_screen)
+Object_Game2.affichageObject(32, 0, 1, 1, windows_screen)
 
 #Object 3
 Object_Game3 = ItemMap("Picture/extras-32x-32.png")
-Object_Game3.random_position(map.ground_pos)
-Object_Game3.affichageObject(64, 0, 2, windows_screen)
+Object_Game3.affichageObject(64, 0, 2, 1, windows_screen)
 
 pygame.display.flip()
 
 
 
-
+# Main Loop Game
 while game_running:
 	for event in pygame.event.get():
 		# Close game event
@@ -64,9 +63,25 @@ while game_running:
 
 			if event.key == K_RIGHT:
 				player.mouvement("right", windows_screen, map.wall_pos)
-			Object_Game1.affichageObject(0, 0, 0, windows_screen)
-			Object_Game2.affichageObject(32, 0, 1, windows_screen)
-			Object_Game3.affichageObject(64, 0, 2, windows_screen)
+			
+
+			if (player.pos_x, player.pos_y) == ItemMap.OBJECT_POS[0]:
+				print("Vous etes sur l'objet 1")
+				Object_Game1.object_state = 0
+				print(Object_Game1.object_state)
+
+			if (player.pos_x, player.pos_y) == ItemMap.OBJECT_POS[1]:
+				print("Vous etes sur l'objet 2")
+				Object_Game2.object_state = 0
+
+			if (player.pos_x, player.pos_y) == ItemMap.OBJECT_POS[2]:
+				print("Vous etes sur l'objet 3")
+				Object_Game3.object_state = 0
+
+			Object_Game1.affichageObject(0, 0, 0, Object_Game1.object_state, windows_screen)
+			Object_Game2.affichageObject(32, 0, 1, Object_Game2.object_state, windows_screen)
+			Object_Game3.affichageObject(64, 0, 2, Object_Game3.object_state, windows_screen)
+
 	map.affichage(windows_screen)
 	gardien.characterPosition(windows_screen)
 	

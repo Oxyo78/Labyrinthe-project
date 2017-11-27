@@ -135,28 +135,41 @@ class Character:
 class ItemMap:
 	"""Get object and show in random position"""
 	OBJECT_COUNT = 0
+	OBJECT_POS = []
 
 	def __init__(self, texture):
 		self.texture = texture
-		self.object_position = []
 		ItemMap.OBJECT_COUNT += 1
+		self.object_state = 1
+		# Console check
 		print(ItemMap.OBJECT_COUNT)
+		print("object_position{} : {}".format(ItemMap.OBJECT_COUNT, ItemMap.OBJECT_POS[ItemMap.OBJECT_COUNT-1]))
 
-	def random_position(self, groundPosition):
+	def random_position(cls, groundPosition):
 		
 		object_position = []
 		object_position = random.sample(groundPosition, 3)
-		self.object_position = object_position
-		for x in range(3):
-			print("object_position{} : {}".format(x, object_position[x]))
+		ItemMap.OBJECT_POS = object_position
+		
 
-	def affichageObject(self, rect_x, rect_y, object_position, windows_screen):
+	ranListObject = classmethod(random_position)
+
+	def affichageObject(self, rect_x, rect_y, object_position, object_state, windows_screen):
 		texture1 = pygame.image.load(self.texture).convert()
 		texture1.set_clip(pygame.Rect(rect_x, rect_y, 32, 32))
 		Object1 = texture1.subsurface(texture1.get_clip())
 		Object1.set_colorkey((0, 0, 0))
-		Object1 = pygame.transform.scale(Object1,(30,30))	
-		windows_screen.blit(Object1,self.object_position[object_position])
-		pygame.display.flip()
+		Object1 = pygame.transform.scale(Object1,(30,30))
+		if object_state == True:	
+			windows_screen.blit(Object1,ItemMap.OBJECT_POS[object_position])
+			pygame.display.flip()
 		
 		
+class EventGame:
+	"""Game scenario"""
+	def __init__(self):
+		pass
+
+	def victory(self):
+		pass
+
