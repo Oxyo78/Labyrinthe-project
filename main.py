@@ -1,44 +1,60 @@
 #coding:utf-8
+#! /usr/bin/env python3
 
-from Class_game import *
+from class_game import *
 import pygame, os
 from pygame.locals import *
+from fonction.map_generator import map_size
+from fonction.config import *
 
-#Variables
-game_running = True
-screen_width=640
-screen_height=470
+"""Main file of the game"""
+
+# Variable
+game_running = 1 # loop game
 
 
-windows_screen = pygame.display.set_mode([screen_width, screen_height])
+# Get the size of the screen from the file map
+lengh_windows = map_size("LevelGame.txt", "map")
+
+# initialize the windows, name and keydown loop
+windows_screen = pygame.display.set_mode([int(lengh_windows), int(lengh_windows)])
 pygame.display.set_caption("Sauvez MacGyver !")
 pygame.key.set_repeat(400,30) 
 
-map = LevelGenerator()
-map.map_generator()
-map.affichage(windows_screen)
+# Print the map on windows
+map = LevelShow()
+map.get_the_map_list()
+map.show_map(windows_screen)
 
-player = Character("Picture/MacGyver.png", 280, 400)
-player.characterPosition(windows_screen)
+# Initialise the player class
+player = Character(map.player_position)
+player.character_texture("Macgyver.png", "picture", 0, 0, 32, 43, 1, 0, 0, 0)
+player.dead_texture("extras-32x-32.png", "picture", 192, 0, 32, 32, 1, 0, 0, 0)
 
-gardien = Character("Picture/Gardien.png", 400, 190)
-gardien.characterPosition(windows_screen)
-map.wall_pos.append((gardien.pos_x, gardien.pos_y)) # Bug ? ne s'ajoute pas a la liste de l'event KEYDOWN
-#print(map.wall_pos)
+# Initialize the gardian class
+gardian = Character(map.gardian_position)
+gardian.character_texture("Gardien.png", "picture", 0, 0, 32, 36, 1, 0, 0, 0)
+gardian.dead_texture("extras-32x-32.png", "picture", 192, 0, 32, 32, 1, 0, 0, 0)
 
-#Initialize 3 random positions for objects
-ItemMap.ranListObject(map.ground_pos)
 #Object 1
-Object_Game1 = ItemMap("Picture/extras-32x-32.png")
-Object_Game1.affichageObject(0, 0, 0, 1, windows_screen)
+object_Game1 = GameObject()
+object_Game1.object_texture("extras-32x-32.png", "picture", 0, 0, 32, 32, 1, 0, 0, 0)
+object_Game1.random_position(map.map_list)
 
 #Object 2
-Object_Game2 = ItemMap("Picture/extras-32x-32.png")
-Object_Game2.affichageObject(32, 0, 1, 1, windows_screen)
+object_Game2 = GameObject()
+object_Game2.object_texture("extras-32x-32.png", "picture", 32, 0, 32, 32, 1, 0, 0, 0)
+object_Game2.random_position(map.map_list)
 
 #Object 3
-Object_Game3 = ItemMap("Picture/extras-32x-32.png")
-Object_Game3.affichageObject(64, 0, 2, 1, windows_screen)
+object_Game3 = GameObject()
+object_Game3.object_texture("extras-32x-32.png", "picture", 64, 0, 32, 32, 1, 0, 0, 0)
+object_Game3.random_position(map.map_list)
+
+
+# Initialize game event
+gameEvent = GameEvent()
+
 
 pygame.display.flip()
 
@@ -53,37 +69,56 @@ while game_running:
 		# Key control event	
 		elif event.type == KEYDOWN:
 			if event.key == K_UP:
-				player.mouvement("up", windows_screen, map.wall_pos)
+				player.player_control("up", windows_screen,map.map_list)
 
 			if event.key == K_DOWN:
-				player.mouvement("down", windows_screen, map.wall_pos)
+				player.player_control("down", windows_screen, map.map_list)
 
 			if event.key == K_LEFT:
-				player.mouvement("left", windows_screen, map.wall_pos)
+				player.player_control("left", windows_screen, map.map_list)
 
 			if event.key == K_RIGHT:
-				player.mouvement("right", windows_screen, map.wall_pos)
+				player.player_control("right", windows_screen, map.map_list)
 			
+			# Take off the item when the player pick up it
+			if (player.character_position_x, player.character_position_y) == (object_Game1.random_x, object_Game1.random_y):
+				if object_Game1.object_state == 1:
+					gameEvent.pickUp_object -= 1
+				object_Game1.object_state = 0
+				print(gameEvent.pickUp_object)
 
-			if (player.pos_x, player.pos_y) == ItemMap.OBJECT_POS[0]:
-				print("Vous etes sur l'objet 1")
-				Object_Game1.object_state = 0
-				print(Object_Game1.object_state)
+			if (player.character_position_x, player.character_position_y) == (object_Game2.random_x, object_Game2.random_y):
+				if object_Game2.object_state == 1:
+					gameEvent.pickUp_object -= 1
+				object_Game2.object_state = 0
+				print(gameEvent.pickUp_object)
 
-			if (player.pos_x, player.pos_y) == ItemMap.OBJECT_POS[1]:
-				print("Vous etes sur l'objet 2")
-				Object_Game2.object_state = 0
+			if (player.character_position_x, player.character_position_y) == (object_Game3.random_x, object_Game3.random_y):
+				if object_Game3.object_state == 1:
+					gameEvent.pickUp_object -= 1
+				object_Game3.object_state = 0
+				print(gameEvent.pickUp_object)
 
-			if (player.pos_x, player.pos_y) == ItemMap.OBJECT_POS[2]:
-				print("Vous etes sur l'objet 3")
-				Object_Game3.object_state = 0
 
-			Object_Game1.affichageObject(0, 0, 0, Object_Game1.object_state, windows_screen)
-			Object_Game2.affichageObject(32, 0, 1, Object_Game2.object_state, windows_screen)
-			Object_Game3.affichageObject(64, 0, 2, Object_Game3.object_state, windows_screen)
+		
 
-	map.affichage(windows_screen)
-	gardien.characterPosition(windows_screen)
+	# Updating of frame
+	map.show_map(windows_screen)
+
+	gameEvent.victory(gardian.character_proximity(player.character_position_x, player.character_position_y))
+	if gameEvent.gardian_show == 1:
+		gardian.show_character(windows_screen, 1)
+	else:
+		gardian.show_character(windows_screen, 0)
+	if gameEvent.player_show == 1:
+		player.show_character(windows_screen, 1)
+	else:
+		player.show_character(windows_screen, 0)
+
+	object_Game1.show_object(windows_screen)
+	object_Game2.show_object(windows_screen)
+	object_Game3.show_object(windows_screen)
+	pygame.display.flip()
 	
 
 

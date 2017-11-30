@@ -1,175 +1,199 @@
 #coding:utf-8
+#! /usr/bin/env python3
 
-import pygame, os
+import pygame, os, random
 from pygame.locals import *
 import random
+from fonction.map_generator import *
+from fonction.texture_loader import *
+from fonction.config import *
 
 
-class LevelGenerator:
+class LevelShow:
 	"""Loading and generator of the map from LevelGame.txt """
 
 	def __init__(self):
-		self.level_design = 0 # List from LevelGame.txt
-		self.wall_pos = [] # List from walls positions
-		self.ground_pos = [] # List from ground positions
+		self.map_list = []
+		self.player_position = 0
+		self.gardian_position = 0
 
 
-	def map_generator(self):
-		with open("LevelGame.txt", "r") as file:
-			file_list = [] 
-			for line in file:
-				line_list = []
-				line.rstrip("\n")
-				file_list.append(line)
-			self.level_design = file_list
+	def get_the_map_list(self):
+		#Get the map list from file
+		self.map_list = map_initialize("LevelGame.txt", "map")
 
 	
-	def affichage(self, windows_screen):
-		coor_x = 10 # Cordinate X of the sprite
-		coor_y = 10 # Cordinate Y of the sprite
-		sprite_size = 30
-		wall_list = [] # Wall colision list
-		ground_list = [] # Ground list
 
+	def show_map(self, windows_screen):
+		# get texture
+		ground = texture_for_sprite("floor-tiles-20x20.png", "picture", 160, 220, 20, 20, 0)
+		wall = texture_for_sprite("floor-tiles-20x20.png", "picture", 60, 60, 20, 20, 0)
+		finnish = texture_for_sprite("floor-tiles-20x20.png", "picture", 160, 20, 20, 20, 1)
 
-		# Get texture and scale 30*30
-		ground_texture = pygame.image.load("Picture/floor-tiles-20x20.png").convert()
-		wall_texture = pygame.image.load("Picture/floor-tiles-20x20.png").convert()
-		finish_texture = pygame.image.load("Picture/depart.png").convert()
-		ground_texture.set_clip(pygame.Rect(160, 220, 20, 20))
-		wall_texture.set_clip(pygame.Rect(40, 60, 20, 20))
-		ground = ground_texture.subsurface(ground_texture.get_clip())
-		wall = wall_texture.subsurface(wall_texture.get_clip())
-		finish = finish_texture.subsurface(finish_texture.get_clip())
-		finish.set_colorkey((0,0,0)) # Convertion in alpha of "depart" texture
-		ground = pygame.transform.scale(ground,(30,30)) # Convertion of the sprit 20*20 in 30*30 pixels
-		wall = pygame.transform.scale(wall,(30,30)) # Convertion of the sprit 20*20 in 30*30 pixels
-
-		for line in self.level_design:
+		# Show the map on windows
+		line_number = 0
+		for line in self.map_list:
+			case_number = 0
 			for letter in line:
-				if letter == "M":
-					windows_screen.blit(wall, (coor_x, coor_y))
-					wall_list.append((coor_x, coor_y)) # Add X and Y position to the wall colision list
+				if letter == "M": # print a wall sprite
+					windows_screen.blit(wall,(case_number*sprite_size, line_number*sprite_size))
 
-				if letter == "G":
-					windows_screen.blit(ground, (coor_x, coor_y))
-					ground_list.append((coor_x, coor_y)) # Add X and Y positions to the ground position list
+				if letter == "G" or letter == "P" or letter == "B" : # print a ground sprite
+					windows_screen.blit(ground,(case_number*sprite_size, line_number*sprite_size))
 
-				if letter == "A":
-					windows_screen.blit(ground, (coor_x, coor_y))
-					windows_screen.blit(finish, (coor_x, coor_y))
-				coor_x += 30
-			coor_y += 30
-			coor_x = 10
-		self.wall_pos = wall_list
-		self.ground_pos = ground_list
+					if letter == "P": # Get the position of the player
+						self.player_position = (case_number, line_number)
+
+					if letter == "B": # Get the position of the gardian
+						self.gardian_position = (case_number, line_number) 
+
+				if letter == "A": # print a finnish sprite on a ground sprite ( transparent texture )
+					windows_screen.blit(ground,(case_number*sprite_size, line_number*sprite_size))
+					windows_screen.blit(finnish,(case_number*sprite_size, line_number*sprite_size))
+
+
+				case_number += 1
+			line_number += 1
 
 
 
 class Character:
-	'''Initialize of toons'''
+	""" initialize the character and control"""
 
-	def __init__(self, texture, pos_x, pos_y):
-		self.texture = texture
-		self.pos_x = pos_x
-		self.pos_y = pos_y
-		self.toon = 0
+	def __init__(self, character_position):
+		# Get the position of the character form the map_list
+		self.character_position_x, self.character_position_y = character_position
+		# Get the size of the map in case
+		self.lengh_map = map_size("LevelGame.txt", "map")
+		self.lengh_map = self.lengh_map / sprite_size
+	
 
-	def characterPosition(self,windows_screen):
-		# Get texture and convert
-		texture = pygame.image.load(self.texture).convert()
-		texture_character = texture.subsurface(texture.get_clip())
-		texture_character = pygame.transform.scale(texture_character,(30,30))
-		texture_character.set_colorkey((0, 0, 0))
-		
-		# Show character on windows
-		windows_screen.blit(texture_character,(self.pos_x, self.pos_y))
-		self.toon = texture_character
 
-	def mouvement(self, direction, windows_screen, wallPosition):
-		# player control
-		if direction == "up":
 
-			if self.pos_y - 30 < 10: # Windows border colision test
-				self.pos_y = self.pos_y
-			else: # Move to 
-				self.pos_y = self.pos_y - 30
-			for x, y in wallPosition: # Wall colision test
-				if (x, y) == (self.pos_x, self.pos_y):
-					self.pos_y = self.pos_y + 30
-					break
+
+	def character_texture(self, file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color):
+		# Get texture of player
+		self.character_texture = texture_for_sprite(file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color)
+
+	def dead_texture(self, file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color):
+		self.dead_texture = texture_for_sprite(file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color)
+	
+	def show_character(self, windows_screen, character_is_alive):
+		# Print the charactere on map
+		if character_is_alive == 1:
+			windows_screen.blit(self.character_texture, (self.character_position_x * sprite_size, self.character_position_y * sprite_size))
+		else:
+			windows_screen.blit(self.dead_texture, (self.character_position_x * sprite_size, self.character_position_y * sprite_size))
+
+	def player_control(self, direction, windows_screen, map_list):
+		# Control the direction of th charactere wih keyboard Up, Down, Left, Right
+		if  direction == "up":
+			if self.character_position_y != 0: # Border up windows check
+				if map_list[self.character_position_y - 1][self.character_position_x] != "M": # Wall collision check
+					self.character_position_y -= 1 # Go up of 1 case
 
 		if direction == "down":
-			if self.pos_y + 30 > 430 :
-				self.pos_y = self.pos_y
-			else:
-				self.pos_y = self.pos_y + 30
-			for x, y in wallPosition:
-				if (x, y) == (self.pos_x, self.pos_y):
-					self.pos_y = self.pos_y - 30
-					break
+			if self.character_position_y != self.lengh_map - 1: # Border down windows check
+				if map_list[self.character_position_y + 1][self.character_position_x] != "M": # Wall collision check
+					self.character_position_y += 1 # Go down of 1 case
 
 		if direction == "right":
-			if self.pos_x + 30 > 430:
-				self.pos_x = self.pos_x
-			else:
-				self.pos_x = self.pos_x + 30
-			for x, y in wallPosition:
-				if (x, y) == (self.pos_x, self.pos_y):
-					self.pos_x = self.pos_x - 30
-					break
-
+			if self.character_position_x != self.lengh_map - 1: # Border right windows check
+				if map_list[self.character_position_y][self.character_position_x + 1] != "M": # Wall collision check
+					self.character_position_x += 1 # Go right of 1 case
+		
 		if direction == "left":
-			if self.pos_x - 30 < 10:
-				self.pos_x = self.pos_x
-			else:
-				self.pos_x = self.pos_x - 30
-			for x, y in wallPosition:
-				if (x, y) == (self.pos_x, self.pos_y):
-					self.pos_x = self.pos_x + 30
-					break
+			if self.character_position_x !=0: # Border left windows check
+				if map_list[self.character_position_y][self.character_position_x - 1] != "M": # Wall collision check
+					self.character_position_x -= 1 # go left of 1 case
+			
+	def character_proximity(self, player_position_x, player_position_y):
+		# Proximity detection for event
 
-		windows_screen.blit(self.toon, (self.pos_x, self.pos_y))
-		pygame.display.flip()
+		if (player_position_x, player_position_y) == (self.character_position_x -1, self.character_position_y):
+			return 1
+		elif (player_position_x, player_position_y) == (self.character_position_x +1, self.character_position_y):
+			return 1
+		elif (player_position_x, player_position_y) == (self.character_position_x, self.character_position_y -1):
+			return 1	
+		elif (player_position_x, player_position_y) == (self.character_position_x -1, self.character_position_y +1):
+			return 1
+		else:
+			return 0
 
-class ItemMap:
-	"""Get object and show in random position"""
-	OBJECT_COUNT = 0
-	OBJECT_POS = []
+class GameObject:
+	""" Initialize an game object """
 
-	def __init__(self, texture):
-		self.texture = texture
-		ItemMap.OBJECT_COUNT += 1
+	COUNT_OBJECT = 0 # Add 1 for each object created
+
+	
+
+	def __init__(self):		
+		self.random_y = 0
+		self.random_x = 0
 		self.object_state = 1
-		# Console check
-		print(ItemMap.OBJECT_COUNT)
-		print("object_position{} : {}".format(ItemMap.OBJECT_COUNT, ItemMap.OBJECT_POS[ItemMap.OBJECT_COUNT-1]))
+		GameObject.COUNT_OBJECT += 1
 
-	def random_position(cls, groundPosition):
-		
-		object_position = []
-		object_position = random.sample(groundPosition, 3)
-		ItemMap.OBJECT_POS = object_position
+
+	def object_texture(self, file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color):
+		self.object_texture = texture_for_sprite(file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color)
 		
 
-	ranListObject = classmethod(random_position)
+	def random_position(self, map_list):
+		self.random_loop = True
+		self.random_y = 0
+		self.random_x = 0
 
-	def affichageObject(self, rect_x, rect_y, object_position, object_state, windows_screen):
-		texture1 = pygame.image.load(self.texture).convert()
-		texture1.set_clip(pygame.Rect(rect_x, rect_y, 32, 32))
-		Object1 = texture1.subsurface(texture1.get_clip())
-		Object1.set_colorkey((0, 0, 0))
-		Object1 = pygame.transform.scale(Object1,(30,30))
-		if object_state == True:	
-			windows_screen.blit(Object1,ItemMap.OBJECT_POS[object_position])
-			pygame.display.flip()
-		
-		
-class EventGame:
-	"""Game scenario"""
+		while self.random_loop:
+			"""get a random position for the oject"""
+
+			self.random_y = random.randrange(0,14)
+			self.random_x = random.randrange(0,14)
+			if map_list[self.random_y][self.random_x] != "M":
+				if map_list[self.random_y][self.random_x] != "B":
+					if map_list[self.random_y][self.random_x] != "P": 					
+						break
+			else:
+				continue
+
+	def show_object(self, windows_screen):
+		"""Show the item with the random position"""
+		if self.object_state == 1: # if the item is no pick up, show him
+			windows_screen.blit(self.object_texture, (self.random_x * 30, self.random_y * 30))
+
+ 
+
+class GameEvent:
+	# Game event
+
 	def __init__(self):
-		pass
+		self.pickUp_object = GameObject.COUNT_OBJECT
 
-	def victory(self):
-		pass
+		self.gardian_show = 1
+		self.player_show = 1
+
+	
+	def victory(self, proximity_detection):
+		
+		if proximity_detection == 1:
+			if self.pickUp_object == 0:
+				self.gardian_show = 0
+			else:
+				self.player_show = 0
+
+
+
+
+
+
+
+
+
+def main():
+	pass
+
+
+
+if __name__ == "__main__":
+	main()
 
