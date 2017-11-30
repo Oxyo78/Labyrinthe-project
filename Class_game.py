@@ -65,10 +65,7 @@ class Character:
 		self.character_position_x, self.character_position_y = character_position
 		# Get the size of the map in case
 		self.lengh_map = map_size("LevelGame.txt", "map")
-		self.lengh_map = self.lengh_map / sprite_size
-	
-
-
+		
 
 
 	def character_texture(self, file_name, folder_file, pos_x_left_top, pos_y_left_top, size_x, size_y, alpha_sprite_file, red_color, green_color, blue_color):
@@ -93,7 +90,7 @@ class Character:
 					self.character_position_y -= 1 # Go up of 1 case
 
 		if direction == "down":
-			if self.character_position_y != self.lengh_map - 1: # Border down windows check
+			if self.character_position_y != self.lengh_map -1 : # Border down windows check
 				if map_list[self.character_position_y + 1][self.character_position_x] != "M": # Wall collision check
 					self.character_position_y += 1 # Go down of 1 case
 

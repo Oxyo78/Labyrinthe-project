@@ -19,8 +19,9 @@ def map_size(file_to_open, folder_file):
 		for line in file:
 			# delete the \n characters at the end of line
 			lengh_map = line.rstrip("\n")
+			lengh_map = len(lengh_map)
 
-	return len(lengh_map)
+		return lengh_map
 
 
 
@@ -50,10 +51,13 @@ def map_initialize(file_to_open, folder_file):
 		
 
 def main():
+	mapsize = map_initialize("LevelGame.txt", "map")
+	print(mapsize)
+
 	# Control of the mapping by print the DF list on console
-	import pandas as pd
+	"""import pandas as pd
 	map_list_df = pd.DataFrame(map_initialize("LevelGame.txt", "map"))
-	print(map_list_df)
+	print(map_list_df)"""
 
 
 if __name__ == "__main__":
