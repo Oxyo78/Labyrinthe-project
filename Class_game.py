@@ -161,14 +161,14 @@ class GameObject:
 		if self.object_state == 1: # if the item is no pick up, show him
 			windows_screen.blit(self.object_texture, (self.random_x * 30, self.random_y * 30))
 
- 
+
 
 class GameEvent:
 	# Game event
 
 	def __init__(self):
 		self.pickUp_object = GameObject.COUNT_OBJECT
-
+		self.game_end = 1
 		self.gardian_show = 1
 		self.player_show = 1
 
@@ -180,6 +180,7 @@ class GameEvent:
 				self.gardian_show = 0
 			else:
 				self.player_show = 0
+			self.game_end = 0
 
 
 

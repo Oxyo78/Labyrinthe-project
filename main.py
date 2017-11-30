@@ -17,7 +17,7 @@ game_running = 1 # loop game
 lengh_windows = map_size("LevelGame.txt", "map")
 
 # initialize the windows, name and keydown loop
-windows_screen = pygame.display.set_mode([int(lengh_windows), int(lengh_windows)])
+windows_screen = pygame.display.set_mode([int(lengh_windows)*sprite_size, int(lengh_windows)*sprite_size])
 pygame.display.set_caption("Sauvez MacGyver !")
 pygame.key.set_repeat(400,30) 
 
@@ -68,36 +68,37 @@ while game_running:
 			game_running = 0			
 		# Key control event	
 		elif event.type == KEYDOWN:
-			if event.key == K_UP:
-				player.player_control("up", windows_screen,map.map_list)
+			if gameEvent.game_end == 1:
+				if event.key == K_UP:
+					player.player_control("up", windows_screen,map.map_list)
 
-			if event.key == K_DOWN:
-				player.player_control("down", windows_screen, map.map_list)
+				if event.key == K_DOWN:
+					player.player_control("down", windows_screen, map.map_list)
 
-			if event.key == K_LEFT:
-				player.player_control("left", windows_screen, map.map_list)
+				if event.key == K_LEFT:
+					player.player_control("left", windows_screen, map.map_list)
 
-			if event.key == K_RIGHT:
-				player.player_control("right", windows_screen, map.map_list)
-			
-			# Take off the item when the player pick up it
-			if (player.character_position_x, player.character_position_y) == (object_Game1.random_x, object_Game1.random_y):
-				if object_Game1.object_state == 1:
-					gameEvent.pickUp_object -= 1
-				object_Game1.object_state = 0
-				print(gameEvent.pickUp_object)
+				if event.key == K_RIGHT:
+					player.player_control("right", windows_screen, map.map_list)
+				
+				# Take off the item when the player pick up it
+				if (player.character_position_x, player.character_position_y) == (object_Game1.random_x, object_Game1.random_y):
+					if object_Game1.object_state == 1:
+						gameEvent.pickUp_object -= 1
+					object_Game1.object_state = 0
+				
 
-			if (player.character_position_x, player.character_position_y) == (object_Game2.random_x, object_Game2.random_y):
-				if object_Game2.object_state == 1:
-					gameEvent.pickUp_object -= 1
-				object_Game2.object_state = 0
-				print(gameEvent.pickUp_object)
+				if (player.character_position_x, player.character_position_y) == (object_Game2.random_x, object_Game2.random_y):
+					if object_Game2.object_state == 1:
+						gameEvent.pickUp_object -= 1
+					object_Game2.object_state = 0
+				
 
-			if (player.character_position_x, player.character_position_y) == (object_Game3.random_x, object_Game3.random_y):
-				if object_Game3.object_state == 1:
-					gameEvent.pickUp_object -= 1
-				object_Game3.object_state = 0
-				print(gameEvent.pickUp_object)
+				if (player.character_position_x, player.character_position_y) == (object_Game3.random_x, object_Game3.random_y):
+					if object_Game3.object_state == 1:
+						gameEvent.pickUp_object -= 1
+					object_Game3.object_state = 0
+				
 
 
 		

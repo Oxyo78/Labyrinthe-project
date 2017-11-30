@@ -20,7 +20,7 @@ def map_size(file_to_open, folder_file):
 			# delete the \n characters at the end of line
 			lengh_map = line.rstrip("\n")
 
-	return len(lengh_map)*sprite_size
+	return len(lengh_map)
 
 
 
