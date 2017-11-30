@@ -11,7 +11,8 @@ Le projet et en plusieurs étapes :
 Vous aurez besoin d'installer les blibliothèques du fichier requirement.txt pour l'execution
 Lancez le fichier main.py pour éxécuter le jeu
 
-La map et entierement modulable et reposionable !
+La map et entierement modulable et repositionnable !
+
 
 
 Oxyo78
