@@ -1,7 +1,2 @@
-__pycache__
-Lib/
-Include/
-Scripts/
-tcl/
 test.py
 pip-selfcheck.json
