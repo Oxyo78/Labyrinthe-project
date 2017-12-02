@@ -1,19 +1,21 @@
-# Labyrinthe-project
-Projet 3 OpenClassrooms de la formation Developpeur d'application Python
+﻿# Labyrinthe-project
 
-Le projet et en plusieurs étapes :
+This is a Python develloper Project from OpenClassrooms.com
 
-1- Création de la fenetre et interface graphique
-2- Animer le personnage
-3- Recupérer les objets
-4- Jeu fonctionniel
+It's a small labyrinthe game with Macgyver, you have to pick up the 3 item on map before to go the gardian exit
 
-Vous aurez besoin d'installer les blibliothèques du fichier requirement.txt pour l'execution
-Lancez le fichier main.py pour éxécuter le jeu
+At this moment, I'm using the cx_freeze 6.0b1 from the official deposit on GitHub to compil in exe
 
-La map et entierement modulable et repositionnable !
+You can make your own map (15*15 sprite) by modifing the map/Levelgame.txt, use upper letter:
+	M for wall
+	G for way character
+	A for the arrival sprite(optionnal)
+	P for the starting player position
+	B for the gardian position
 
+The 3 item will appear randomly on the way character
 
+have fun !
 
 Oxyo78
-11/2017
+01/12/2017
