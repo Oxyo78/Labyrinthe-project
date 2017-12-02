@@ -178,3 +178,15 @@ class GameEvent:
             else:
                 self.player_show = 0
             self.game_end = 0
+
+    def text_console(self):
+        """Print text on console"""
+        if self.pickup_object == 2:
+            print("2 items left")
+
+        if self.pickup_object == 1:
+            print("1 items left, go !")
+
+        if self.pickup_object == 0:
+            print("Let's fight the gardian !")
+

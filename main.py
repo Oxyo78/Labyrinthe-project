@@ -59,6 +59,7 @@ object_Game3.random_pos(level.map_list)
 # Initialize game event
 gameEvent = GameEvent()
 pygame.display.flip()
+print("You need to pickup the 3 items to fight the gardian !")
 
 
 # Main Loop Game
@@ -84,20 +85,22 @@ while game_running:
 
 				# Take off item when the player pick up it
                 new_player_position = player.charac_pos_x, player.charac_pos_y
-
                 if new_player_position == (object_Game1.random_x, object_Game1.random_y):
                     if object_Game1.object_state == 1:
                         gameEvent.pickup_object -= 1
+                        gameEvent.text_console()
                     object_Game1.object_state = 0
 
                 if new_player_position == (object_Game2.random_x, object_Game2.random_y):
                     if object_Game2.object_state == 1:
                         gameEvent.pickup_object -= 1
+                        gameEvent.text_console()
                     object_Game2.object_state = 0
 
                 if new_player_position == (object_Game3.random_x, object_Game3.random_y):
                     if object_Game3.object_state == 1:
                         gameEvent.pickup_object -= 1
+                        gameEvent.text_console()
                     object_Game3.object_state = 0
 
 
