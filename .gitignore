@@ -1,2 +1,6 @@
-test.py
 pip-selfcheck.json
+Include
+Lib
+Scripts
+tcl
+cx_Freeze-master

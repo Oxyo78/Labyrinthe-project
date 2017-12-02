@@ -22,7 +22,7 @@ LENGH_SCREEN = map_size("LevelGame.txt", "map")
 lengh_screen = int(LENGH_SCREEN)*sprite_size
 heigh_screen = int(LENGH_SCREEN)*sprite_size
 windows_screen = pygame.display.set_mode([lengh_screen, heigh_screen])
-pygame.display.set_caption("Sauvez MacGyver !")
+pygame.display.set_caption("Save Macgyver !")
 pygame.key.set_repeat(400, 30)
 
 # Print the level on windows
@@ -58,10 +58,7 @@ object_Game3.random_pos(level.map_list)
 
 # Initialize game event
 gameEvent = GameEvent()
-
-
 pygame.display.flip()
-
 
 
 # Main Loop Game

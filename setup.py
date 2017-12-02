@@ -1,6 +1,11 @@
 """Setup file to create a exe"""
 
+import os
 from cx_Freeze import setup, Executable
+
+os.environ['TCL_LIBRARY'] = "C:/Python363/tcl/tcl8.6"
+os.environ['TK_LIBRARY'] = "C:/Python363/tcl/tk8.6"
+
 
 # call setup  and add files / folder
 setup(
