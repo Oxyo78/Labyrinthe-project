@@ -86,7 +86,7 @@ class Character:
 
 
     def player_control(self, direction, windows_screen, map_list):
-        """Control the direction of th charace wih keyboard Up, Down, Left, Right"""
+        """Control the direction of the character wih keyboard Up, Down, Left, Right"""
         if  direction == "up":
             if self.charac_pos_y != 0: # Border up windows check
                 if map_list[self.charac_pos_y - 1][self.charac_pos_x] != "M": # Wall collision check
