@@ -12,6 +12,9 @@ from class_game import LevelShow, Character, GameObject, GameEvent
 from fonction.map_generator import map_size
 from fonction.config import *
 
+#initialize pygame
+pygame.init()
+
 # Variable
 game_running = 1 # loop game
 
@@ -20,8 +23,7 @@ LENGH_SCREEN = map_size("LevelGame.txt", "map")
 
 # initialize the windows, name and keydown loop
 lengh_screen = int(LENGH_SCREEN)*sprite_size
-heigh_screen = int(LENGH_SCREEN)*sprite_size
-windows_screen = pygame.display.set_mode([lengh_screen, heigh_screen])
+windows_screen = pygame.display.set_mode([lengh_screen, lengh_screen + 50])
 pygame.display.set_caption("Save Macgyver !")
 pygame.key.set_repeat(400, 30)
 
@@ -59,7 +61,7 @@ object_Game3.random_pos(level.map_list)
 # Initialize game event
 gameEvent = GameEvent()
 pygame.display.flip()
-print("You need to pickup the 3 items to fight the gardian !")
+gameEvent.text_game(windows_screen, 1)
 
 
 # Main Loop Game
@@ -88,19 +90,19 @@ while game_running:
                 if new_player_position == (object_Game1.random_x, object_Game1.random_y):
                     if object_Game1.object_state == 1:
                         gameEvent.pickup_object -= 1
-                        gameEvent.text_console()
+                        gameEvent.text_game(windows_screen, 2)
                     object_Game1.object_state = 0
 
                 if new_player_position == (object_Game2.random_x, object_Game2.random_y):
                     if object_Game2.object_state == 1:
                         gameEvent.pickup_object -= 1
-                        gameEvent.text_console()
+                        gameEvent.text_game(windows_screen, 2)
                     object_Game2.object_state = 0
 
                 if new_player_position == (object_Game3.random_x, object_Game3.random_y):
                     if object_Game3.object_state == 1:
                         gameEvent.pickup_object -= 1
-                        gameEvent.text_console()
+                        gameEvent.text_game(windows_screen, 2)                   
                     object_Game3.object_state = 0
 
 
@@ -117,11 +119,13 @@ while game_running:
         gardian.show_charac(windows_screen, 1)
     else:
         gardian.show_charac(windows_screen, 0)
+        gameEvent.text_game(windows_screen, 3)
     # If player win
     if gameEvent.player_show == 1:
-        player.show_charac(windows_screen, 1)
+        player.show_charac(windows_screen, 1)   
     else:
         player.show_charac(windows_screen, 0)
+        gameEvent.text_game(windows_screen, 3)
 
     object_Game1.show_object(windows_screen)
     object_Game2.show_object(windows_screen)
