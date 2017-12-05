@@ -6,128 +6,133 @@
 
 
 import pygame
-from pygame.locals import *
+from pygame.locals import QUIT
+from pygame.locals import KEYDOWN
+from pygame.locals import K_RIGHT
+from pygame.locals import K_LEFT
+from pygame.locals import K_DOWN
+from pygame.locals import K_UP
 
 from class_game import LevelShow, Character, GameObject, GameEvent
 from fonction.map_generator import map_size
-from fonction.config import *
+from fonction.config import SPRITE_SIZE
 
 #initialize pygame
 pygame.init()
 
 # Variable
-game_running = 1 # loop game
+GAME_RUNNING = 1 # loop game
 
 # Get the size of the screen from the file map
 LENGH_SCREEN = map_size("LevelGame.txt", "map")
 
 # initialize the windows, name and keydown loop
-lengh_screen = int(LENGH_SCREEN)*sprite_size
-windows_screen = pygame.display.set_mode([lengh_screen, lengh_screen + 50])
+LENGH_SCREEN = int(LENGH_SCREEN)*SPRITE_SIZE
+WNDOWS_SCREEN = pygame.display.set_mode([LENGH_SCREEN, LENGH_SCREEN + 50])
 pygame.display.set_caption("Save Macgyver !")
 pygame.key.set_repeat(400, 30)
 
-# Print the level on windows
-level = LevelShow()
-level.get_the_map_list()
-level.show_map(windows_screen)
+# Print the LEVEL on windows
+LEVEL = LevelShow()
+LEVEL.get_the_map_list()
+LEVEL.show_map(WNDOWS_SCREEN)
 
-# Initialise the player class
-player = Character(level.player_pos)
-player.charac_texture("Macgyver.png", "picture", 0, 0, 32, 43, 1)
-player.dead_texture("extras-32x-32.png", "picture", 192, 0, 32, 32, 1)
+# Initialise the PLAYER class
+PLAYER = Character(LEVEL.player_pos)
+PLAYER.charac_texture("Macgyver.png", "picture", 0, 0, 32, 43, 1)
+PLAYER.dead_texture("extras-32x-32.png", "picture", 192, 0, 32, 32, 1)
 
-# Initialize the gardian class
-gardian = Character(level.gardian_pos)
-gardian.charac_texture("Gardien.png", "picture", 0, 0, 32, 36, 1)
-gardian.dead_texture("extras-32x-32.png", "picture", 192, 0, 32, 32, 1)
+# Initialize the GARDIAN class
+GARDIAN = Character(LEVEL.gardian_pos)
+GARDIAN.charac_texture("Gardien.png", "picture", 0, 0, 32, 36, 1)
+GARDIAN.dead_texture("extras-32x-32.png", "picture", 192, 0, 32, 32, 1)
 
 #Object 1
-object_Game1 = GameObject()
-object_Game1.object_texture("extras-32x-32.png", "picture", 0, 0, 32, 32, 1)
-object_Game1.random_pos(level.map_list)
+OBJECT_GAME1 = GameObject()
+OBJECT_GAME1.object_texture("extras-32x-32.png", "picture", 0, 0, 32, 32, 1)
+OBJECT_GAME1.random_pos(LEVEL.map_list)
 
 #Object 2
-object_Game2 = GameObject()
-object_Game2.object_texture("extras-32x-32.png", "picture", 32, 0, 32, 32, 1)
-object_Game2.random_pos(level.map_list)
+OBJECT_GAME2 = GameObject()
+OBJECT_GAME2.object_texture("extras-32x-32.png", "picture", 32, 0, 32, 32, 1)
+OBJECT_GAME2.random_pos(LEVEL.map_list)
 
 #Object 3
-object_Game3 = GameObject()
-object_Game3.object_texture("extras-32x-32.png", "picture", 64, 0, 32, 32, 1)
-object_Game3.random_pos(level.map_list)
+OBJECT_GAME3 = GameObject()
+OBJECT_GAME3.object_texture("extras-32x-32.png", "picture", 64, 0, 32, 32, 1)
+OBJECT_GAME3.random_pos(LEVEL.map_list)
 
 
 # Initialize game event
-gameEvent = GameEvent()
+GAMEEVENT = GameEvent()
 pygame.display.flip()
-gameEvent.text_game(windows_screen, 1)
+GAMEEVENT.text_game(WNDOWS_SCREEN, 1)
 
 
 # Main Loop Game
-while game_running:
+while GAME_RUNNING:
     for event in pygame.event.get():
 		# Close game event
         if event.type == QUIT:
-            game_running = 0
+            GAME_RUNNING = 0
 		# Key control event
         elif event.type == KEYDOWN:
-            if gameEvent.game_end == 1:
+            if GAMEEVENT.game_end == 1:
                 if event.key == K_UP:
-                    player.player_control("up", windows_screen, level.map_list)
+                    PLAYER.player_control("up", LEVEL.map_list)
 
                 if event.key == K_DOWN:
-                    player.player_control("down", windows_screen, level.map_list)
+                    PLAYER.player_control("down", LEVEL.map_list)
 
                 if event.key == K_LEFT:
-                    player.player_control("left", windows_screen, level.map_list)
+                    PLAYER.player_control("left", LEVEL.map_list)
 
                 if event.key == K_RIGHT:
-                    player.player_control("right", windows_screen, level.map_list)
+                    PLAYER.player_control("right", LEVEL.map_list)
 
-				# Take off item when the player pick up it
-                new_player_position = player.charac_pos_x, player.charac_pos_y
-                if new_player_position == (object_Game1.random_x, object_Game1.random_y):
-                    if object_Game1.object_state == 1:
-                        gameEvent.pickup_object -= 1
-                        gameEvent.text_game(windows_screen, 2)
-                    object_Game1.object_state = 0
+				# Take off item when the PLAYER pick up it
+                new_player_position = PLAYER.charac_pos_x, PLAYER.charac_pos_y
+                if new_player_position == (OBJECT_GAME1.random_x, OBJECT_GAME1.random_y):
+                    if OBJECT_GAME1.object_state == 1:
+                        GAMEEVENT.pickup_object -= 1
+                        GAMEEVENT.text_game(WNDOWS_SCREEN, 2)
+                    OBJECT_GAME1.object_state = 0
 
-                if new_player_position == (object_Game2.random_x, object_Game2.random_y):
-                    if object_Game2.object_state == 1:
-                        gameEvent.pickup_object -= 1
-                        gameEvent.text_game(windows_screen, 2)
-                    object_Game2.object_state = 0
+                if new_player_position == (OBJECT_GAME2.random_x, OBJECT_GAME2.random_y):
+                    if OBJECT_GAME2.object_state == 1:
+                        GAMEEVENT.pickup_object -= 1
+                        GAMEEVENT.text_game(WNDOWS_SCREEN, 2)
+                    OBJECT_GAME2.object_state = 0
 
-                if new_player_position == (object_Game3.random_x, object_Game3.random_y):
-                    if object_Game3.object_state == 1:
-                        gameEvent.pickup_object -= 1
-                        gameEvent.text_game(windows_screen, 2)                   
-                    object_Game3.object_state = 0
+                if new_player_position == (OBJECT_GAME3.random_x, OBJECT_GAME3.random_y):
+                    if OBJECT_GAME3.object_state == 1:
+                        GAMEEVENT.pickup_object -= 1
+                        GAMEEVENT.text_game(WNDOWS_SCREEN, 2)
+                    OBJECT_GAME3.object_state = 0
 
 
 	# Updating frame
-    level.show_map(windows_screen)
+    LEVEL.show_map(WNDOWS_SCREEN)
 
-    # player proximity of gardian
-    PLAYER_POSITION_X = player.charac_pos_x
-    PLAYER_POSITION_Y = player.charac_pos_y
-    gameEvent.victory(gardian.charac_proximity(PLAYER_POSITION_X, PLAYER_POSITION_Y))
+    # PLAYER proximity of GARDIAN
+    PLAYER_POSITION_X = PLAYER.charac_pos_x
+    PLAYER_POSITION_Y = PLAYER.charac_pos_y
+    GAMEEVENT.victory(GARDIAN.charac_proximity(PLAYER_POSITION_X, PLAYER_POSITION_Y))
 
-    # If player lose
-    if gameEvent.gardian_show == 1:
-        gardian.show_charac(windows_screen, 1)
+    # If PLAYER lose
+    if GAMEEVENT.gardian_show == 1:
+        GARDIAN.show_charac(WNDOWS_SCREEN, 1)
     else:
-        gardian.show_charac(windows_screen, 0)
-        gameEvent.text_game(windows_screen, 3)
-    # If player win
-    if gameEvent.player_show == 1:
-        player.show_charac(windows_screen, 1)   
+        GARDIAN.show_charac(WNDOWS_SCREEN, 0)
+        GAMEEVENT.text_game(WNDOWS_SCREEN, 3)
+    # If PLAYER win
+    if GAMEEVENT.player_show == 1:
+        PLAYER.show_charac(WNDOWS_SCREEN, 1)
     else:
-        player.show_charac(windows_screen, 0)
-        gameEvent.text_game(windows_screen, 3)
+        PLAYER.show_charac(WNDOWS_SCREEN, 0)
+        GAMEEVENT.text_game(WNDOWS_SCREEN, 3)
 
-    object_Game1.show_object(windows_screen)
-    object_Game2.show_object(windows_screen)
-    object_Game3.show_object(windows_screen)
+    OBJECT_GAME1.show_object(WNDOWS_SCREEN)
+    OBJECT_GAME2.show_object(WNDOWS_SCREEN)
+    OBJECT_GAME3.show_object(WNDOWS_SCREEN)
     pygame.display.flip()

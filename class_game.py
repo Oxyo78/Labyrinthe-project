@@ -2,16 +2,13 @@
 #! /usr/bin/env python3
 
 """Class of the game"""
+import random
 
 import pygame
-from pygame.locals import *
-
-import random
-import time
 
 from fonction.map_generator import map_size, map_initialize
 from fonction.texture_loader import texture_for_sprite
-from fonction.config import sprite_size
+from fonction.config import SPRITE_SIZE
 
 
 class LevelShow:
@@ -40,10 +37,10 @@ class LevelShow:
             case_number = 0
             for letter in line:
                 if letter == "M": # print a wall sprite
-                    windows_screen.blit(wall, (case_number*sprite_size, line_number*sprite_size))
+                    windows_screen.blit(wall, (case_number*SPRITE_SIZE, line_number*SPRITE_SIZE))
 
                 if letter == "G" or letter == "P" or letter == "B": # print a ground sprite
-                    windows_screen.blit(ground, (case_number*sprite_size, line_number*sprite_size))
+                    windows_screen.blit(ground, (case_number*SPRITE_SIZE, line_number*SPRITE_SIZE))
 
                     if letter == "P": # Get the pos of the player
                         self.player_pos = (case_number, line_number)
@@ -52,8 +49,8 @@ class LevelShow:
                         self.gardian_pos = (case_number, line_number)
 
                 if letter == "A": # print a finnish sprite on a ground sprite (transparent texture)
-                    windows_screen.blit(ground, (case_number*sprite_size, line_number*sprite_size))
-                    windows_screen.blit(finnish, (case_number*sprite_size, line_number*sprite_size))
+                    windows_screen.blit(ground, (case_number*SPRITE_SIZE, line_number*SPRITE_SIZE))
+                    windows_screen.blit(finnish, (case_number*SPRITE_SIZE, line_number*SPRITE_SIZE))
 
                 case_number += 1
             line_number += 1
@@ -82,14 +79,14 @@ class Character:
 
     def show_charac(self, windows_screen, charac_is_alive):
         """Print the charace on map"""
-        self.charac_pos = (self.charac_pos_x * sprite_size, self.charac_pos_y * sprite_size)
+        self.charac_pos = (self.charac_pos_x * SPRITE_SIZE, self.charac_pos_y * SPRITE_SIZE)
         if charac_is_alive == 1:
             windows_screen.blit(self.charac_texture, (self.charac_pos))
         else:
             windows_screen.blit(self.dead_texture, (self.charac_pos))
 
 
-    def player_control(self, direction, windows_screen, map_list):
+    def player_control(self, direction, map_list):
         """Control the direction of the character wih keyboard Up, Down, Left, Right"""
         if  direction == "up":
             if self.charac_pos_y != 0: # Border up windows check
@@ -134,6 +131,10 @@ class GameObject:
         self.random_x = 0
         self.object_state = 1
         GameObject.count_object += 1
+        self.random_loop = True
+        self.random_y = 0
+        self.random_x = 0
+        self.texture = 0
 
 
     def object_texture(self, file, folder, pos_x, pos_y, size_x, size_y, alpha):
@@ -143,9 +144,6 @@ class GameObject:
 
     def random_pos(self, map_list):
         """Get a random position in the level list on ground position"""
-        self.random_loop = True
-        self.random_y = 0
-        self.random_x = 0
 
         while self.random_loop:
             """get a random pos for the oject"""
@@ -174,6 +172,8 @@ class GameEvent:
         self.player_show = 1
         self.final_text = 0
         self.text = ""
+        self.font = 0
+        self.text_to_print = 0
 
     def victory(self, proximity_detection):
         """Victory or defeat"""
@@ -188,14 +188,16 @@ class GameEvent:
         """print the text on screen game"""
         if number_text == 1:
             self.font = pygame.font.SysFont("calibri", 20)
-            self.text = self.font.render("Pick up the 3 items to fight the gardian", True, (255, 255, 10))
+            text = "Pick up the 3 items to fight the gardian"
+            self.text = self.font.render(text, True, (255, 255, 10))
             windows_screen.blit(self.text, (20, 460))
 
-        if number_text == 2:           
+        if number_text == 2:
             if self.pickup_object == 0:
                 windows_screen.fill((0, 0, 0))
                 self.font = pygame.font.SysFont("calibri", 20)
-                self.text = self.font.render("We got the 3 items, let's fight the gardian !", True, (255, 255, 10))
+                text = "We got the 3 items, let's fight the gardian !"
+                self.text = self.font.render(text, True, (255, 255, 10))
                 windows_screen.blit(self.text, (20, 460))
 
         if number_text == 3:
@@ -210,5 +212,6 @@ class GameEvent:
 
             if self.player_show == 1:
                 self.font = pygame.font.SysFont("calibri", 30)
-                self.text_to_print = self.font.render("You escape ! Yahouuuuu", True, (255, 255, 30))
+                text = "You escape ! Yahouuuuu"
+                self.text_to_print = self.font.render(text, True, (255, 255, 30))
                 windows_screen.blit(self.text_to_print, (75, 110))
