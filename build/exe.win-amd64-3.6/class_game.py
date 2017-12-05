@@ -3,7 +3,11 @@
 
 """Class of the game"""
 
+import pygame
+from pygame.locals import *
+
 import random
+import time
 
 from fonction.map_generator import map_size, map_initialize
 from fonction.texture_loader import texture_for_sprite
@@ -86,7 +90,7 @@ class Character:
 
 
     def player_control(self, direction, windows_screen, map_list):
-        """Control the direction of th charace wih keyboard Up, Down, Left, Right"""
+        """Control the direction of the character wih keyboard Up, Down, Left, Right"""
         if  direction == "up":
             if self.charac_pos_y != 0: # Border up windows check
                 if map_list[self.charac_pos_y - 1][self.charac_pos_x] != "M": # Wall collision check
@@ -116,7 +120,7 @@ class Character:
             return 1
         elif (player_pos_x, player_pos_y) == (self.charac_pos_x, self.charac_pos_y -1):
             return 1
-        elif (player_pos_x, player_pos_y) == (self.charac_pos_x -1, self.charac_pos_y +1):
+        elif (player_pos_x, player_pos_y) == (self.charac_pos_x, self.charac_pos_y +1):
             return 1
 
 
@@ -168,7 +172,8 @@ class GameEvent:
         self.game_end = 1
         self.gardian_show = 1
         self.player_show = 1
-
+        self.final_text = 0
+        self.text = ""
 
     def victory(self, proximity_detection):
         """Victory or defeat"""
@@ -179,14 +184,31 @@ class GameEvent:
                 self.player_show = 0
             self.game_end = 0
 
-    def text_console(self):
-        """Print text on console"""
-        if self.pickup_object == 2:
-            print("2 items left")
+    def text_game(self, windows_screen, number_text):
+        """print the text on screen game"""
+        if number_text == 1:
+            self.font = pygame.font.SysFont("calibri", 20)
+            self.text = self.font.render("Pick up the 3 items to fight the gardian", True, (255, 255, 10))
+            windows_screen.blit(self.text, (20, 460))
 
-        if self.pickup_object == 1:
-            print("1 items left, go !")
+        if number_text == 2:           
+            if self.pickup_object == 0:
+                windows_screen.fill((0, 0, 0))
+                self.font = pygame.font.SysFont("calibri", 20)
+                self.text = self.font.render("We got the 3 items, let's fight the gardian !", True, (255, 255, 10))
+                windows_screen.blit(self.text, (20, 460))
 
-        if self.pickup_object == 0:
-            print("Let's fight the gardian !")
+        if number_text == 3:
+            self.font = pygame.font.SysFont("calibri", 50)
+            self.text_to_print = self.font.render("GAME OVER", False, (255, 255, 10))
+            windows_screen.blit(self.text_to_print, (100, 50))
 
+            if self.gardian_show == 1:
+                self.font = pygame.font.SysFont("calibri", 30)
+                self.text_to_print = self.font.render("You lose...", True, (255, 255, 30))
+                windows_screen.blit(self.text_to_print, (170, 110))
+
+            if self.player_show == 1:
+                self.font = pygame.font.SysFont("calibri", 30)
+                self.text_to_print = self.font.render("You escape ! Yahouuuuu", True, (255, 255, 30))
+                windows_screen.blit(self.text_to_print, (75, 110))
