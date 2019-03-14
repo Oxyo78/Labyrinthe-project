@@ -15,7 +15,9 @@ You can make your own map (15*15 sprite) by modifing the map/Levelgame.txt, use 
 
 The 3 item will appear randomly on the way character
 
+You can build with cx-freeze or try the windows build
+
 have fun !
 
 Oxyo78
-01/12/2017
+14/03/2019
