@@ -4,3 +4,4 @@ Lib
 Scripts
 tcl
 cx_Freeze-master
+__pycache__
